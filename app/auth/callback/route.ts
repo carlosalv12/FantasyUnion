@@ -1,16 +1,17 @@
+// app/auth/callback/route.ts
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import type { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
 
-export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const code = url.searchParams.get('code')
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies })
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // 🚀 Tras login, redirigimos a /perfil
-  return NextResponse.redirect(new URL('/perfil', url.origin))
+  return NextResponse.redirect(new URL('/perfil', requestUrl.origin))
 }

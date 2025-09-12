@@ -1,15 +1,21 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function PerfilPage() {
+  const router = useRouter()
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    const load = async () => {
+    const loadProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
       const { data } = await supabase
         .from('profiles')
         .select('name')
@@ -18,16 +24,30 @@ export default function PerfilPage() {
       if (data) setName(data.name || '')
       setLoading(false)
     }
-    load()
-  }, [])
+
+    loadProfile()
+
+    // 👇 escuchar cambios de sesión
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        router.push('/auth/login')
+      }
+    })
+
+    return () => {
+      listener.subscription.unsubscribe()
+    }
+  }, [router])
 
   const save = async () => {
+    setSaving(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const { error } = await supabase
       .from('profiles')
       .update({ name })
       .eq('id', user.id)
+    setSaving(false)
     if (!error) alert('Perfil guardado ✅')
     else alert('Error al guardar')
   }
@@ -54,9 +74,10 @@ export default function PerfilPage() {
         />
         <button
           onClick={save}
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition"
+          disabled={saving}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
         >
-          Guardar
+          {saving ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
     </div>
