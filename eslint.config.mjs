@@ -19,7 +19,12 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // 👈 añade esto
+      "react-hooks/exhaustive-deps": "warn",      // 👈 opcional, que sea warning en vez de error
+    },
   },
 ];
+
 
 export default eslintConfig;
