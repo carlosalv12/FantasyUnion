@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -19,13 +19,25 @@ export default function LoginPage() {
     if (error) {
       alert(error.message)
     } else {
-      router.push('/perfil')
+      const user = data.user
+      if (!user) return
+      // 👇 comprobar si ya tiene nombre en profiles
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', user.id)
+        .single()
+      if (profile?.name) {
+        router.push('/alinear')
+      } else {
+        router.push('/perfil')
+      }
     }
   }
 
   const handleSignup = async () => {
     setLoading(true)
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
@@ -33,6 +45,9 @@ export default function LoginPage() {
     if (error) {
       alert(error.message)
     } else {
+      const user = data.user
+      if (!user) return
+      // Nuevo usuario siempre irá a /perfil para configurar nombre
       router.push('/perfil')
     }
   }

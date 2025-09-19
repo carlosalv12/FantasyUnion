@@ -2,9 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabaseClient'
-// Update the import path below if your useUser hook is located elsewhere, for example:
 import { useUser } from '../hooks/useUser'
-// If the correct path is different, adjust '../hooks/useUser' to the actual relative path.
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -32,7 +30,7 @@ export default function Navbar() {
         </button>
 
         {/* Links desktop */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-8 text-lg">
           <Link href="/alinear" className="hover:text-green-400">Alinear</Link>
           <Link href="/resultados" className="hover:text-green-400">Resultados</Link>
           <Link href="/perfil" className="hover:text-green-400">Perfil</Link>
@@ -43,7 +41,7 @@ export default function Navbar() {
               <span className="text-sm text-gray-300">{user.email}</span>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded"
+                className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-1 px-2 rounded"
               >
                 Salir
               </button>
@@ -51,7 +49,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
             >
               Entrar
             </Link>
@@ -61,7 +59,7 @@ export default function Navbar() {
 
       {/* Menú móvil */}
       {open && (
-        <div className="md:hidden px-4 pb-3 space-y-2 bg-[#1f2937]">
+        <div className="md:hidden px-4 pb-3 space-y-3 bg-[#1f2937] text-lg">
           <Link href="/alinear" className="block hover:text-green-400">Alinear</Link>
           <Link href="/resultados" className="block hover:text-green-400">Resultados</Link>
           <Link href="/perfil" className="block hover:text-green-400">Perfil</Link>
@@ -72,7 +70,7 @@ export default function Navbar() {
               <span className="text-sm text-gray-300">{user.email}</span>
               <button
                 onClick={handleLogout}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded"
+                className="w-fit bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-1 px-2 rounded"
               >
                 Salir
               </button>
@@ -80,7 +78,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="block bg-green-600 hover:bg-green-700 text-center text-white font-semibold py-2 px-3 rounded"
+              className="block bg-green-600 hover:bg-green-700 text-center text-white font-semibold py-2 px-4 rounded"
             >
               Entrar
             </Link>
