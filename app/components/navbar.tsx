@@ -1,9 +1,18 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabaseClient'
+// Update the import path below if your useUser hook is located elsewhere, for example:
+import { useUser } from '../hooks/useUser'
+// If the correct path is different, adjust '../hooks/useUser' to the actual relative path.
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { user, loading } = useUser()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+  }
 
   return (
     <nav className="bg-[#111827] text-white border-b border-green-600">
@@ -28,12 +37,25 @@ export default function Navbar() {
           <Link href="/resultados" className="hover:text-green-400">Resultados</Link>
           <Link href="/perfil" className="hover:text-green-400">Perfil</Link>
           <Link href="/admin" className="hover:text-green-400">Admin</Link>
-          <Link
-            href="/auth/login"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded"
-          >
-            Entrar
-          </Link>
+
+          {loading ? null : user ? (
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-300">{user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded"
+              >
+                Salir
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded"
+            >
+              Entrar
+            </Link>
+          )}
         </div>
       </div>
 
@@ -44,12 +66,25 @@ export default function Navbar() {
           <Link href="/resultados" className="block hover:text-green-400">Resultados</Link>
           <Link href="/perfil" className="block hover:text-green-400">Perfil</Link>
           <Link href="/admin" className="block hover:text-green-400">Admin</Link>
-          <Link
-            href="/auth/login"
-            className="block bg-green-600 hover:bg-green-700 text-center text-white font-semibold py-2 px-3 rounded"
-          >
-            Entrar
-          </Link>
+
+          {loading ? null : user ? (
+            <div className="flex flex-col space-y-2">
+              <span className="text-sm text-gray-300">{user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded"
+              >
+                Salir
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="block bg-green-600 hover:bg-green-700 text-center text-white font-semibold py-2 px-3 rounded"
+            >
+              Entrar
+            </Link>
+          )}
         </div>
       )}
     </nav>
