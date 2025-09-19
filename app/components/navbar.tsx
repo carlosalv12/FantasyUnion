@@ -1,15 +1,17 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import { useUser } from '../hooks/useUser'
-
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { user, loading } = useUser()
+  const router = useRouter()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
+    router.push('/app/auth/login')
   }
 
   return (
